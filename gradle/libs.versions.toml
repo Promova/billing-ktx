@@ -1,0 +1,107 @@
+[versions]
+application-id = "com.appsci.billingktx"
+
+sdk-compile = "34"
+sdk-target = "34"
+sdk-min = "23"
+
+android-gp = "8.2.1"
+kotlin = "1.9.22"
+
+kotlin-ksp = "1.9.22-1.0.16"
+kotlin-coroutines = "1.7.3"
+kotlin-compose-compiler = "1.5.6"
+
+android-core = "1.12.0"
+android-compose = "1.8.2"
+android-appcompat = "1.6.1"
+android-material = "1.11.0"
+androidTools = "31.2.1"
+android-lifecycle = "2.7.0"
+
+google-billing = "6.1.0"
+
+compose-bom = "2023.10.01"
+compose-lifecycle = "2.7.0"
+compose-constraint = "1.0.1"
+
+test-android-core = "1.5.0"
+test-android-runner = "1.5.2"
+test-android-rules = "1.5.0"
+test-junit-core = "4.13.2"
+test-junit-android = "1.1.5"
+test-espresso-core = "3.5.1"
+test-junit-jupiter = "5.10.1"
+test-mockito-kotlin = "5.2.1"
+test-mockito-android = "5.9.0"
+test-assertJ-core = "3.25.1"
+
+utils-timber = "5.0.1"
+
+# Dependencies
+dependencies-benmanes = "0.50.0"
+dependencies-littlerobots = "0.8.3"
+dependencies-analysis = "1.28.0"
+
+[libraries]
+android-core = { group = "androidx.core", name = "core-ktx", version.ref = "android-core" }
+android-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "android-compose" }
+android-material = { group = "com.google.android.material", name = "material", version.ref = "android-material" }
+android-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "android-appcompat" }
+android-lifecycle = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "android-lifecycle" }
+
+
+google-billing = { group = "com.android.billingclient", name = "billing-ktx", version.ref = "google-billing" }
+
+compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
+compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }
+compose-animation = { group = "androidx.compose.animation", name = "animation" }
+compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+compose-runtime = { group = "androidx.compose.runtime", name = "runtime" }
+compose-ui = { group = "androidx.compose.ui", name = "ui" }
+compose-util = { group = "androidx.compose.ui", name = "ui-util" }
+compose-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+compose-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+compose-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "compose-lifecycle" }
+compose-lifecycle = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "compose-lifecycle" }
+compose-constraint = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "compose-constraint" }
+
+
+test-android-core = { group = "androidx.test", name = "core", version.ref = "test-android-core" }
+test-android-runner = { group = "androidx.test", name = "runner", version.ref = "test-android-runner" }
+test-android-rules = { group = "androidx.test", name = "rules", version.ref = "test-android-rules" }
+test-kotlin-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlin-coroutines" }
+test-junit-core = { group = "junit", name = "junit", version.ref = "test-junit-core" }
+test-junit-android = { group = "androidx.test.ext", name = "junit", version.ref = "test-junit-android" }
+test-junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref = "test-junit-jupiter" }
+test-junit-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "test-junit-jupiter" }
+test-junit-params = { group = "org.junit.jupiter", name = "junit-jupiter-params", version.ref = "test-junit-jupiter" }
+test-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "test-espresso-core" }
+test-mockito-android = { group = "org.mockito", name = "mockito-android", version.ref = "test-mockito-android" }
+test-mockito-kotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version.ref = "test-mockito-kotlin" }
+test-assertJ-core = { group = "org.assertj", name = "assertj-core", version.ref = "test-assertJ-core" }
+
+utils-timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "utils-timber" }
+
+# Gradle utils
+android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "android-gp" }
+android-tools-common = { group = "com.android.tools", name = "common", version.ref = "androidTools" }
+kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "kotlin-ksp" }
+
+[plugins]
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
+kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "kotlin-ksp" }
+
+android-application = { id = "com.android.application", version.ref = "android-gp" }
+android-library = { id = "com.android.library", version.ref = "android-gp" }
+
+# Dependencies
+dependencies-benmanes = { id = "com.github.ben-manes.versions", version.ref = "dependencies-benmanes" }
+dependencies-littlerobots = { id = "nl.littlerobots.version-catalog-update", version.ref = "dependencies-littlerobots" }
+dependencies-analysis = { id = "com.autonomousapps.dependency-analysis", version.ref = "dependencies-analysis" }
+
+[bundles]

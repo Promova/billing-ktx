@@ -3,39 +3,26 @@ application-id = "com.appsci.billingktx"
 
 sdk-compile = "34"
 sdk-target = "34"
-sdk-min = "23"
+sdk-min = "24"
 
-android-gp = "8.2.1"
-kotlin = "1.9.22"
+android-gp = "8.2.2"
+kotlin = "1.9.23"
 
-kotlin-ksp = "1.9.22-1.0.16"
+kotlin-ksp = "1.9.23-1.0.19"
 kotlin-coroutines = "1.7.3"
-kotlin-compose-compiler = "1.5.6"
+kotlin-compose-compiler = "1.5.11"
 
-android-core = "1.12.0"
-android-compose = "1.8.2"
+android-core = "1.13.1"
+android-compose = "1.9.0"
 android-appcompat = "1.6.1"
 android-material = "1.11.0"
-androidTools = "31.2.1"
+androidTools = "31.4.0"
 android-lifecycle = "2.7.0"
 
-google-billing = "6.1.0"
+google-billing = "6.2.1"
 
-compose-bom = "2023.10.01"
+compose-bom = "2024.05.00"
 compose-lifecycle = "2.7.0"
-compose-constraint = "1.0.1"
-
-test-android-core = "1.5.0"
-test-android-runner = "1.5.2"
-test-android-rules = "1.5.0"
-test-junit-core = "4.13.2"
-test-junit-android = "1.1.5"
-test-espresso-core = "3.5.1"
-test-junit-jupiter = "5.10.1"
-test-mockito-kotlin = "5.2.1"
-test-mockito-android = "5.9.0"
-test-assertJ-core = "3.25.1"
-
 utils-timber = "5.0.1"
 
 # Dependencies
@@ -64,22 +51,6 @@ compose-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 compose-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 compose-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "compose-lifecycle" }
 compose-lifecycle = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "compose-lifecycle" }
-compose-constraint = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "compose-constraint" }
-
-
-test-android-core = { group = "androidx.test", name = "core", version.ref = "test-android-core" }
-test-android-runner = { group = "androidx.test", name = "runner", version.ref = "test-android-runner" }
-test-android-rules = { group = "androidx.test", name = "rules", version.ref = "test-android-rules" }
-test-kotlin-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlin-coroutines" }
-test-junit-core = { group = "junit", name = "junit", version.ref = "test-junit-core" }
-test-junit-android = { group = "androidx.test.ext", name = "junit", version.ref = "test-junit-android" }
-test-junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref = "test-junit-jupiter" }
-test-junit-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "test-junit-jupiter" }
-test-junit-params = { group = "org.junit.jupiter", name = "junit-jupiter-params", version.ref = "test-junit-jupiter" }
-test-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "test-espresso-core" }
-test-mockito-android = { group = "org.mockito", name = "mockito-android", version.ref = "test-mockito-android" }
-test-mockito-kotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version.ref = "test-mockito-kotlin" }
-test-assertJ-core = { group = "org.assertj", name = "assertj-core", version.ref = "test-assertJ-core" }
 
 utils-timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "utils-timber" }
 

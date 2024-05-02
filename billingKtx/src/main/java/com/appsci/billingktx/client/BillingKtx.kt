@@ -46,41 +46,40 @@ interface BillingKtx {
 
     fun connect(): Flow<BillingClient>
 
-    suspend fun isFeatureSupported(@FeatureType feature: String): Result<Boolean>
+    suspend fun isFeatureSupported(@FeatureType feature: String): Boolean
 
     fun observeUpdates(): Flow<PurchasesUpdate>
 
-    suspend fun getPurchases(@BillingClient.ProductType productType: String): Result<List<Purchase>>
+    suspend fun getPurchases(@BillingClient.ProductType productType: String): List<Purchase>
 
-    suspend fun getPurchaseHistory(@BillingClient.ProductType productType: String): Result<List<PurchaseHistoryRecord>>
+    suspend fun getPurchaseHistory(@BillingClient.ProductType productType: String): List<PurchaseHistoryRecord>
 
     /**
      * do not mix subs and inapp types in the same params object
      */
-    suspend fun getProductDetails(params: QueryProductDetailsParams): Result<List<ProductDetails>>
+    suspend fun getProductDetails(params: QueryProductDetailsParams): List<ProductDetails>
 
-    suspend fun launchFlow(activity: Activity, params: BillingFlowParams): Result<Unit>
+    suspend fun launchFlow(activity: Activity, params: BillingFlowParams)
 
     suspend fun showInappMessages(
         activity: Activity,
         params: InAppMessageParams,
-    ): Result<InAppMessageResult>
+    ): InAppMessageResult
 
-    suspend fun consumeProduct(params: ConsumeParams): Result<Unit>
+    suspend fun consumeProduct(params: ConsumeParams)
 
-    suspend fun acknowledge(params: AcknowledgePurchaseParams): Result<Unit>
+    suspend fun acknowledge(params: AcknowledgePurchaseParams)
 
-    suspend fun getBillingConfig(): Result<BillingConfig>
+    suspend fun getBillingConfig(): BillingConfig
 
     @Deprecated("use getProductDetails instead")
-    suspend fun getSkuDetails(params: SkuDetailsParams): Result<List<SkuDetails>>
+    suspend fun getSkuDetails(params: SkuDetailsParams): List<SkuDetails>
 }
 
 class BillingKtxImpl(
     billingFactory: BillingKtxFactory,
+    scope: CoroutineScope = CoroutineScope(SupervisorJob()),
 ) : BillingKtx {
-
-    private val scope = CoroutineScope(SupervisorJob())
 
     private val updatesFlow = MutableSharedFlow<PurchasesUpdate>()
 
@@ -110,8 +109,8 @@ class BillingKtxImpl(
         return connectionFlow
     }
 
-    override suspend fun isFeatureSupported(@FeatureType feature: String): Result<Boolean> {
-        return runCatchingOnBilling {
+    override suspend fun isFeatureSupported(@FeatureType feature: String): Boolean {
+        return withConnectedClient {
             val result = it.isFeatureSupported(feature)
             result.responseCode == BillingClient.BillingResponseCode.OK
         }
@@ -124,17 +123,17 @@ class BillingKtxImpl(
         }
     }
 
-    override suspend fun getPurchases(@BillingClient.ProductType productType: String): Result<List<Purchase>> {
+    override suspend fun getPurchases(@BillingClient.ProductType productType: String): List<Purchase> {
         return getBoughtItems(productType)
     }
 
-    override suspend fun getPurchaseHistory(@BillingClient.ProductType productType: String): Result<List<PurchaseHistoryRecord>> {
+    override suspend fun getPurchaseHistory(@BillingClient.ProductType productType: String): List<PurchaseHistoryRecord> {
         return getHistory(productType)
     }
 
     @Deprecated("use getProductDetails instead")
-    override suspend fun getSkuDetails(params: SkuDetailsParams): Result<List<SkuDetails>> {
-        return runCatchingOnBilling { client ->
+    override suspend fun getSkuDetails(params: SkuDetailsParams): List<SkuDetails> {
+        return withConnectedClient { client ->
             val detailsResult = client.querySkuDetails(params)
             val billingResult = detailsResult.billingResult
             val skuDetailsList = detailsResult.skuDetailsList
@@ -147,8 +146,8 @@ class BillingKtxImpl(
         }
     }
 
-    override suspend fun getProductDetails(params: QueryProductDetailsParams): Result<List<ProductDetails>> {
-        return runCatchingOnBilling { client ->
+    override suspend fun getProductDetails(params: QueryProductDetailsParams): List<ProductDetails> {
+        return withConnectedClient { client ->
             val detailsResult = client.queryProductDetails(params)
             val billingResult = detailsResult.billingResult
             val productDetails = detailsResult.productDetailsList
@@ -161,8 +160,8 @@ class BillingKtxImpl(
         }
     }
 
-    override suspend fun launchFlow(activity: Activity, params: BillingFlowParams): Result<Unit> {
-        return runCatchingOnBilling {
+    override suspend fun launchFlow(activity: Activity, params: BillingFlowParams) {
+        return withConnectedClient {
             val billingResult = withContext(Dispatchers.Main) {
                 it.launchBillingFlow(activity, params)
             }
@@ -177,8 +176,8 @@ class BillingKtxImpl(
     override suspend fun showInappMessages(
         activity: Activity,
         params: InAppMessageParams,
-    ): Result<InAppMessageResult> {
-        return runCatchingOnBilling { client ->
+    ): InAppMessageResult {
+        return withConnectedClient { client ->
             suspendCoroutine {
                 client.showInAppMessages(activity, params) { result: InAppMessageResult ->
                     val responseCode = result.responseCode
@@ -194,8 +193,8 @@ class BillingKtxImpl(
         }
     }
 
-    override suspend fun consumeProduct(params: ConsumeParams): Result<Unit> {
-        return runCatchingOnBilling { client ->
+    override suspend fun consumeProduct(params: ConsumeParams) {
+        return withConnectedClient { client ->
             val consumePurchase = client.consumePurchase(params)
             val billingResult = consumePurchase.billingResult
             val responseCode = billingResult.responseCode
@@ -207,8 +206,8 @@ class BillingKtxImpl(
         }
     }
 
-    override suspend fun acknowledge(params: AcknowledgePurchaseParams): Result<Unit> {
-        return runCatchingOnBilling { client ->
+    override suspend fun acknowledge(params: AcknowledgePurchaseParams) {
+        return withConnectedClient { client ->
             val billingResult = client.acknowledgePurchase(params)
             val responseCode = billingResult.responseCode
             if (isSuccess(responseCode)) {
@@ -219,8 +218,8 @@ class BillingKtxImpl(
         }
     }
 
-    override suspend fun getBillingConfig(): Result<BillingConfig> {
-        return runCatchingOnBilling { client ->
+    override suspend fun getBillingConfig(): BillingConfig {
+        return withConnectedClient { client ->
             val params = GetBillingConfigParams
                 .newBuilder()
                 .build()
@@ -236,8 +235,8 @@ class BillingKtxImpl(
         }
     }
 
-    private suspend fun getBoughtItems(@BillingClient.ProductType type: String): Result<List<Purchase>> {
-        return runCatchingOnBilling {
+    private suspend fun getBoughtItems(@BillingClient.ProductType type: String): List<Purchase> {
+        return withConnectedClient {
             val params = QueryPurchasesParams.newBuilder()
                 .setProductType(type)
                 .build()
@@ -253,8 +252,8 @@ class BillingKtxImpl(
         }
     }
 
-    private suspend fun getHistory(@BillingClient.ProductType type: String): Result<List<PurchaseHistoryRecord>> {
-        return runCatchingOnBilling { client ->
+    private suspend fun getHistory(@BillingClient.ProductType type: String): List<PurchaseHistoryRecord> {
+        return withConnectedClient { client ->
             val params = QueryPurchaseHistoryParams.newBuilder()
                 .setProductType(type)
                 .build()
@@ -266,16 +265,6 @@ class BillingKtxImpl(
                 list.orEmpty()
             } else {
                 throw BillingException.fromResult(billingResult)
-            }
-        }
-    }
-
-    private suspend fun <R> runCatchingOnBilling(
-        block: suspend (BillingClient) -> R,
-    ): Result<R> {
-        return runCatching {
-            withConnectedClient {
-                block(it)
             }
         }
     }

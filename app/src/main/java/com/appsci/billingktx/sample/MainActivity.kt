@@ -52,19 +52,21 @@ class MainActivity : ComponentActivity() {
         val loadPurchasesClick = {
             lifecycleScope.launch {
                 val products: Result<List<Purchase>> =
-                    billingKtx.getPurchases(BillingClient.ProductType.SUBS)
-                        .onSuccess {
-                            Timber.d("getPurchases $it")
-                        }.onFailure {
-                            Timber.e(it, "getPurchases")
-                        }
+                    runCatching {
+                        billingKtx.getPurchases(BillingClient.ProductType.SUBS)
+                    }.onSuccess {
+                        Timber.d("getPurchases $it")
+                    }.onFailure {
+                        Timber.e(it, "getPurchases")
+                    }
                 val subs: Result<List<Purchase>> =
-                    billingKtx.getPurchases(BillingClient.ProductType.INAPP)
-                        .onSuccess {
-                            Timber.d("getPurchases $it")
-                        }.onFailure {
-                            Timber.e(it, "getPurchases")
-                        }
+                    runCatching {
+                        billingKtx.getPurchases(BillingClient.ProductType.INAPP)
+                    }.onSuccess {
+                        Timber.d("getPurchases $it")
+                    }.onFailure {
+                        Timber.e(it, "getPurchases")
+                    }
             }
             Unit
         }
@@ -72,19 +74,21 @@ class MainActivity : ComponentActivity() {
         val loadHistoryClick = {
             lifecycleScope.launch {
                 val products: Result<List<PurchaseHistoryRecord>> =
-                    billingKtx.getPurchaseHistory(BillingClient.ProductType.SUBS)
-                        .onFailure {
-                            Timber.e(it, "getPurchaseHistory")
-                        }.onSuccess {
-                            Timber.d("getPurchaseHistory $it")
-                        }
+                    runCatching {
+                        billingKtx.getPurchaseHistory(BillingClient.ProductType.SUBS)
+                    }.onFailure {
+                        Timber.e(it, "getPurchaseHistory")
+                    }.onSuccess {
+                        Timber.d("getPurchaseHistory $it")
+                    }
                 val subs: Result<List<PurchaseHistoryRecord>> =
-                    billingKtx.getPurchaseHistory(BillingClient.ProductType.INAPP)
-                        .onFailure {
-                            Timber.e(it, "getPurchaseHistory")
-                        }.onSuccess {
-                            Timber.d("getPurchaseHistory $it")
-                        }
+                    runCatching {
+                        billingKtx.getPurchaseHistory(BillingClient.ProductType.INAPP)
+                    }.onFailure {
+                        Timber.e(it, "getPurchaseHistory")
+                    }.onSuccess {
+                        Timber.d("getPurchaseHistory $it")
+                    }
             }
             Unit
         }
@@ -96,12 +100,14 @@ class MainActivity : ComponentActivity() {
                         .setProductId("sku1")
                         .build()
                 )
-                val productDetailsList = billingKtx.getProductDetails(
-                    QueryProductDetailsParams.newBuilder()
-                        .setProductList(
-                            productList,
-                        ).build()
-                ).onFailure {
+                val productDetailsList = runCatching {
+                    billingKtx.getProductDetails(
+                        QueryProductDetailsParams.newBuilder()
+                            .setProductList(
+                                productList,
+                            ).build()
+                    )
+                }.onFailure {
                     Timber.e(it, "getProductDetails")
                 }.onSuccess {
                     Timber.d("getProductDetails $it")

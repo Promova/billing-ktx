@@ -1,28 +1,28 @@
 [versions]
 application-id = "com.appsci.billingktx"
 
-sdk-compile = "34"
-sdk-target = "34"
+sdk-compile = "35"
+sdk-target = "35"
 sdk-min = "24"
 
 android-gp = "8.2.2"
-kotlin = "1.9.23"
+kotlin = "2.0.21"
 
-kotlin-ksp = "1.9.23-1.0.19"
+kotlin-ksp = "2.0.21-1.0.26"
 kotlin-coroutines = "1.7.3"
 kotlin-compose-compiler = "1.5.11"
 
-android-core = "1.13.1"
-android-compose = "1.9.0"
-android-appcompat = "1.6.1"
-android-material = "1.11.0"
-androidTools = "31.4.0"
-android-lifecycle = "2.7.0"
+android-core = "1.15.0"
+android-compose = "1.9.3"
+android-appcompat = "1.7.0"
+android-material = "1.12.0"
+androidTools = "31.7.2"
+android-lifecycle = "2.8.7"
 
-google-billing = "6.2.1"
+google-billing = "7.1.1"
 
-compose-bom = "2024.05.00"
-compose-lifecycle = "2.7.0"
+compose-bom = "2024.10.01"
+compose-lifecycle = "2.8.7"
 utils-timber = "5.0.1"
 
 # Dependencies

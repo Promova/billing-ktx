@@ -1,6 +1,10 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    `maven-publish`
 }
 
 android {
@@ -31,6 +35,41 @@ android {
         jvmTarget = JavaVersion.VERSION_17.toString()
     }
 }
+
+val localProperties = Properties()
+val localPropsFile = rootProject.file("local.properties")
+if (localPropsFile.exists()) {
+    localProperties.load(FileInputStream(localPropsFile))
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            create("release", MavenPublication::class) {
+                from(components["release"])
+                groupId = "com.github.AppSci"
+                artifactId = "billing-ktx"
+                version = "0.9.0"
+            }
+        }
+
+        repositories {
+            maven {
+                name = "GitHubPackages"
+                url = uri("https://maven.pkg.github.com/AppSci/billing-ktx")
+                credentials {
+                    val username =
+                        localProperties.getProperty("github.actor") ?: System.getenv("GPR_USER")
+                    val password =
+                        localProperties.getProperty("github.token") ?: System.getenv("GPR_API_KEY")
+                    setUsername(username)
+                    setPassword(password)
+                }
+            }
+        }
+    }
+}
+
 
 dependencies {
 

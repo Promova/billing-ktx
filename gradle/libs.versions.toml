@@ -10,7 +10,6 @@ kotlin = "2.0.21"
 
 kotlin-ksp = "2.0.21-1.0.26"
 kotlin-coroutines = "1.7.3"
-kotlin-compose-compiler = "1.5.11"
 
 android-core = "1.15.0"
 android-compose = "1.9.3"
@@ -66,6 +65,7 @@ kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "kotlin-ksp" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 
 android-application = { id = "com.android.application", version.ref = "android-gp" }
 android-library = { id = "com.android.library", version.ref = "android-gp" }

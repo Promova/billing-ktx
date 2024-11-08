@@ -1,0 +1,78 @@
+[versions]
+application-id = "com.appsci.billingktx"
+
+sdk-compile = "35"
+sdk-target = "35"
+sdk-min = "24"
+
+android-gp = "8.2.2"
+kotlin = "2.0.21"
+
+kotlin-ksp = "2.0.21-1.0.26"
+kotlin-coroutines = "1.7.3"
+kotlin-compose-compiler = "1.5.11"
+
+android-core = "1.15.0"
+android-compose = "1.9.3"
+android-appcompat = "1.7.0"
+android-material = "1.12.0"
+androidTools = "31.7.2"
+android-lifecycle = "2.8.7"
+
+google-billing = "7.1.1"
+
+compose-bom = "2024.10.01"
+compose-lifecycle = "2.8.7"
+utils-timber = "5.0.1"
+
+# Dependencies
+dependencies-benmanes = "0.50.0"
+dependencies-littlerobots = "0.8.3"
+dependencies-analysis = "1.28.0"
+
+[libraries]
+android-core = { group = "androidx.core", name = "core-ktx", version.ref = "android-core" }
+android-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "android-compose" }
+android-material = { group = "com.google.android.material", name = "material", version.ref = "android-material" }
+android-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "android-appcompat" }
+android-lifecycle = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "android-lifecycle" }
+
+
+google-billing = { group = "com.android.billingclient", name = "billing-ktx", version.ref = "google-billing" }
+
+compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
+compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }
+compose-animation = { group = "androidx.compose.animation", name = "animation" }
+compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+compose-runtime = { group = "androidx.compose.runtime", name = "runtime" }
+compose-ui = { group = "androidx.compose.ui", name = "ui" }
+compose-util = { group = "androidx.compose.ui", name = "ui-util" }
+compose-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+compose-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+compose-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "compose-lifecycle" }
+compose-lifecycle = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "compose-lifecycle" }
+
+utils-timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "utils-timber" }
+
+# Gradle utils
+android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "android-gp" }
+android-tools-common = { group = "com.android.tools", name = "common", version.ref = "androidTools" }
+kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "kotlin-ksp" }
+
+[plugins]
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
+kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "kotlin-ksp" }
+
+android-application = { id = "com.android.application", version.ref = "android-gp" }
+android-library = { id = "com.android.library", version.ref = "android-gp" }
+
+# Dependencies
+dependencies-benmanes = { id = "com.github.ben-manes.versions", version.ref = "dependencies-benmanes" }
+dependencies-littlerobots = { id = "nl.littlerobots.version-catalog-update", version.ref = "dependencies-littlerobots" }
+dependencies-analysis = { id = "com.autonomousapps.dependency-analysis", version.ref = "dependencies-analysis" }
+
+[bundles]

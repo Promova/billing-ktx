@@ -56,7 +56,7 @@ afterEvaluate {
         repositories {
             maven {
                 name = "GitHubPackages"
-                url = uri("https://maven.pkg.github.com/AppSci/billing-ktx")
+                url = uri("https://maven.pkg.github.com/Promova/billing-ktx")
                 credentials {
                     val username =
                         localProperties.getProperty("github.actor") ?: System.getenv("GPR_USER")

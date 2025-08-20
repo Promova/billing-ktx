@@ -10,7 +10,7 @@ env:
 
 jobs:
   build:
-    runs-on: android-hetzner-dedicated
+    runs-on: ubuntu-latest
 
     steps:
       - name: Check out repository
@@ -23,6 +23,9 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: 17
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
 
       - name: Build Android project
         run: |

@@ -2,10 +2,6 @@ name: Publish to Maven
 
 on:
   workflow_dispatch:
-    branches:
-      - develop
-      - master
-      - 'feature/*'
 
 env:
   EC2_GENERATE_CONTENT_ID: ${{ secrets.EC2_GENERATE_CONTENT_ID }}

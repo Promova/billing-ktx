@@ -4,6 +4,7 @@ import android.content.Context
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingResult
+import com.android.billingclient.api.PendingPurchasesParams
 import com.android.billingclient.api.PurchasesUpdatedListener
 import com.appsci.billingktx.exception.BillingException
 import kotlinx.coroutines.CoroutineScope
@@ -26,6 +27,9 @@ class BillingKtxFactory(
     private val transform: (Flow<BillingClient>) -> Flow<BillingClient> = DefaultTransform(
         sharingScope = CoroutineScope(SupervisorJob()),
     ),
+    private val enableOneTimeProducts: Boolean = false,
+    private val enablePrepaidPlans: Boolean = false,
+    private val enableAutoServiceReconnection: Boolean = false,
 ) {
 
     fun createBillingClientFlow(listener: PurchasesUpdatedListener): Flow<BillingClient> {
@@ -38,9 +42,26 @@ class BillingKtxFactory(
         listener: PurchasesUpdatedListener,
     ): Flow<BillingClient> {
         val flow: Flow<BillingClient> = callbackFlow {
+            val pendingPurchasesParams = PendingPurchasesParams.newBuilder()
+                .apply {
+                    if (enableOneTimeProducts) {
+                        enableOneTimeProducts()
+                    }
+
+                    if (enablePrepaidPlans) {
+                        enablePrepaidPlans()
+                    }
+                }
+                .build()
+
             val billingClient = BillingClient.newBuilder(context)
-                .enablePendingPurchases()
+                .enablePendingPurchases(pendingPurchasesParams)
                 .setListener(listener)
+                .apply {
+                    if (enableAutoServiceReconnection) {
+                        enableAutoServiceReconnection()
+                    }
+                }
                 .build()
             Timber.d("createClientFlow callbackFlow ${billingClient.hashCode()}")
             billingClient.startConnection(

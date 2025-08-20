@@ -19,7 +19,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingFlowParams
 import com.android.billingclient.api.Purchase
-import com.android.billingclient.api.PurchaseHistoryRecord
 import com.android.billingclient.api.QueryProductDetailsParams
 import com.appsci.billingktx.client.BillingKtx
 import com.appsci.billingktx.client.BillingKtxImpl
@@ -37,7 +36,12 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
-        billingKtx = BillingKtxImpl(BillingKtxFactory(this))
+        billingKtx = BillingKtxImpl(
+            billingFactory = BillingKtxFactory(
+                context = this,
+                enableOneTimeProducts = true,
+            )
+        )
         billingKtx.keepConnection(this)
 
         lifecycleScope.launch {
@@ -71,27 +75,6 @@ class MainActivity : ComponentActivity() {
             Unit
         }
 
-        val loadHistoryClick = {
-            lifecycleScope.launch {
-                val products: Result<List<PurchaseHistoryRecord>> =
-                    runCatching {
-                        billingKtx.getPurchaseHistory(BillingClient.ProductType.SUBS)
-                    }.onFailure {
-                        Timber.e(it, "getPurchaseHistory")
-                    }.onSuccess {
-                        Timber.d("getPurchaseHistory $it")
-                    }
-                val subs: Result<List<PurchaseHistoryRecord>> =
-                    runCatching {
-                        billingKtx.getPurchaseHistory(BillingClient.ProductType.INAPP)
-                    }.onFailure {
-                        Timber.e(it, "getPurchaseHistory")
-                    }.onSuccess {
-                        Timber.d("getPurchaseHistory $it")
-                    }
-            }
-            Unit
-        }
         val launchFlowClick = {
             lifecycleScope.launch {
                 val productList = listOf(
@@ -150,11 +133,6 @@ class MainActivity : ComponentActivity() {
                             onClick = loadPurchasesClick,
                         ) {
                             Text(text = "Load purchases")
-                        }
-                        OutlinedButton(
-                            onClick = loadHistoryClick,
-                        ) {
-                            Text(text = "Load history")
                         }
                         OutlinedButton(
                             onClick = launchFlowClick,

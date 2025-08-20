@@ -18,6 +18,12 @@ jobs:
         with:
           clean: true
 
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: 17
+
       - name: Build Android project
         run: |
           export ANDROID_HOME=$HOME/Android/Sdk

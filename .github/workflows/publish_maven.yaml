@@ -15,7 +15,7 @@ env:
 jobs:
 
   build:
-    runs-on: android-srv
+    runs-on: android-hetzner-dedicated
 
     steps:
 

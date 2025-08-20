@@ -12,19 +12,13 @@ import com.android.billingclient.api.InAppMessageParams
 import com.android.billingclient.api.InAppMessageResult
 import com.android.billingclient.api.ProductDetails
 import com.android.billingclient.api.Purchase
-import com.android.billingclient.api.PurchaseHistoryRecord
 import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.QueryProductDetailsParams
-import com.android.billingclient.api.QueryPurchaseHistoryParams
 import com.android.billingclient.api.QueryPurchasesParams
-import com.android.billingclient.api.SkuDetails
-import com.android.billingclient.api.SkuDetailsParams
 import com.android.billingclient.api.acknowledgePurchase
 import com.android.billingclient.api.consumePurchase
 import com.android.billingclient.api.queryProductDetails
-import com.android.billingclient.api.queryPurchaseHistory
 import com.android.billingclient.api.queryPurchasesAsync
-import com.android.billingclient.api.querySkuDetails
 import com.appsci.billingktx.connection.BillingKtxFactory
 import com.appsci.billingktx.exception.BillingException
 import kotlinx.coroutines.CoroutineScope
@@ -52,8 +46,6 @@ interface BillingKtx {
 
     suspend fun getPurchases(@BillingClient.ProductType productType: String): List<Purchase>
 
-    suspend fun getPurchaseHistory(@BillingClient.ProductType productType: String): List<PurchaseHistoryRecord>
-
     /**
      * do not mix subs and inapp types in the same params object
      */
@@ -71,9 +63,6 @@ interface BillingKtx {
     suspend fun acknowledge(params: AcknowledgePurchaseParams)
 
     suspend fun getBillingConfig(): BillingConfig
-
-    @Deprecated("use getProductDetails instead")
-    suspend fun getSkuDetails(params: SkuDetailsParams): List<SkuDetails>
 }
 
 class BillingKtxImpl(
@@ -125,25 +114,6 @@ class BillingKtxImpl(
 
     override suspend fun getPurchases(@BillingClient.ProductType productType: String): List<Purchase> {
         return getBoughtItems(productType)
-    }
-
-    override suspend fun getPurchaseHistory(@BillingClient.ProductType productType: String): List<PurchaseHistoryRecord> {
-        return getHistory(productType)
-    }
-
-    @Deprecated("use getProductDetails instead")
-    override suspend fun getSkuDetails(params: SkuDetailsParams): List<SkuDetails> {
-        return withConnectedClient { client ->
-            val detailsResult = client.querySkuDetails(params)
-            val billingResult = detailsResult.billingResult
-            val skuDetailsList = detailsResult.skuDetailsList
-            val responseCode = billingResult.responseCode
-            if (isSuccess(responseCode)) {
-                skuDetailsList.orEmpty()
-            } else {
-                throw BillingException.fromResult(billingResult)
-            }
-        }
     }
 
     override suspend fun getProductDetails(params: QueryProductDetailsParams): List<ProductDetails> {
@@ -246,23 +216,6 @@ class BillingKtxImpl(
 
             if (isSuccess(billingResult.responseCode)) {
                 purchasesList
-            } else {
-                throw BillingException.fromResult(billingResult)
-            }
-        }
-    }
-
-    private suspend fun getHistory(@BillingClient.ProductType type: String): List<PurchaseHistoryRecord> {
-        return withConnectedClient { client ->
-            val params = QueryPurchaseHistoryParams.newBuilder()
-                .setProductType(type)
-                .build()
-            val historyResult = client.queryPurchaseHistory(params)
-            val billingResult = historyResult.billingResult
-            val responseCode = billingResult.responseCode
-            val list = historyResult.purchaseHistoryRecordList
-            if (isSuccess(responseCode)) {
-                list.orEmpty()
             } else {
                 throw BillingException.fromResult(billingResult)
             }

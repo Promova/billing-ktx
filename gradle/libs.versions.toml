@@ -18,7 +18,7 @@ android-material = "1.12.0"
 androidTools = "31.7.2"
 android-lifecycle = "2.8.7"
 
-google-billing = "7.1.1"
+google-billing = "8.0.0"
 
 compose-bom = "2024.10.01"
 compose-lifecycle = "2.8.7"

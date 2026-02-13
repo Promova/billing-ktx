@@ -20,8 +20,9 @@ import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingFlowParams
 import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.QueryProductDetailsParams
-import com.appsci.billingktx.client.BillingKtx
-import com.appsci.billingktx.client.BillingKtxImpl
+import com.appsci.billingktx.client.connection.BillingConnectionImpl
+import com.appsci.billingktx.client.repository.BillingRepositoryImpl
+import com.appsci.billingktx.client.ui.BillingFlowLauncherImpl
 import com.appsci.billingktx.connection.BillingKtxFactory
 import com.appsci.billingktx.lifecycle.keepConnection
 import com.appsci.billingktx.sample.theme.BillingKtxTheme
@@ -30,23 +31,27 @@ import timber.log.Timber
 
 class MainActivity : ComponentActivity() {
 
-    private lateinit var billingKtx: BillingKtx
+    private lateinit var connection: BillingConnectionImpl
+    private lateinit var repository: BillingRepositoryImpl
+    private lateinit var flowLauncher: BillingFlowLauncherImpl
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
-        billingKtx = BillingKtxImpl(
+        connection = BillingConnectionImpl(
             billingFactory = BillingKtxFactory(
                 context = this,
                 enableOneTimeProducts = true,
             )
         )
-        billingKtx.keepConnection(this)
+        repository = BillingRepositoryImpl(connection)
+        flowLauncher = BillingFlowLauncherImpl(connection)
+        connection.keepConnection(this)
 
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                billingKtx.observeUpdates()
+                connection.observeUpdates()
                     .collect {
                         Timber.d("observeUpdates $it")
                     }
@@ -57,7 +62,7 @@ class MainActivity : ComponentActivity() {
             lifecycleScope.launch {
                 val products: Result<List<Purchase>> =
                     runCatching {
-                        billingKtx.getPurchases(BillingClient.ProductType.SUBS)
+                        repository.getPurchases(BillingClient.ProductType.SUBS)
                     }.onSuccess {
                         Timber.d("getPurchases $it")
                     }.onFailure {
@@ -65,7 +70,7 @@ class MainActivity : ComponentActivity() {
                     }
                 val subs: Result<List<Purchase>> =
                     runCatching {
-                        billingKtx.getPurchases(BillingClient.ProductType.INAPP)
+                        repository.getPurchases(BillingClient.ProductType.INAPP)
                     }.onSuccess {
                         Timber.d("getPurchases $it")
                     }.onFailure {
@@ -84,7 +89,7 @@ class MainActivity : ComponentActivity() {
                         .build()
                 )
                 val productDetailsList = runCatching {
-                    billingKtx.getProductDetails(
+                    repository.getProductDetails(
                         QueryProductDetailsParams.newBuilder()
                             .setProductList(
                                 productList,
@@ -108,7 +113,7 @@ class MainActivity : ComponentActivity() {
                             )
                         )
                         .build()
-                    billingKtx.launchFlow(
+                    flowLauncher.launchFlow(
                         activity = this@MainActivity,
                         params = flowParams,
                     )

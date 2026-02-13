@@ -62,7 +62,4 @@ class BillingConnectionImpl(
         }.first()
     }
 
-    internal fun isSuccess(@BillingClient.BillingResponseCode responseCode: Int): Boolean {
-        return responseCode == BillingClient.BillingResponseCode.OK
-    }
 }

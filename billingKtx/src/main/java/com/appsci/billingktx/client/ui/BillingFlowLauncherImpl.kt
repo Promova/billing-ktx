@@ -5,6 +5,7 @@ import com.android.billingclient.api.BillingFlowParams
 import com.android.billingclient.api.InAppMessageParams
 import com.android.billingclient.api.InAppMessageResult
 import com.appsci.billingktx.client.connection.BillingConnectionImpl
+import com.appsci.billingktx.client.connection.isSuccess
 import com.appsci.billingktx.exception.BillingException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -21,7 +22,7 @@ class BillingFlowLauncherImpl(
             val billingResult = withContext(Dispatchers.Main) {
                 it.launchBillingFlow(activity, params)
             }
-            if (connection.isSuccess(billingResult.responseCode)) {
+            if (isSuccess(billingResult.responseCode)) {
                 Unit
             } else {
                 throw BillingException.fromResult(billingResult)
@@ -37,7 +38,7 @@ class BillingFlowLauncherImpl(
             suspendCancellableCoroutine {
                 client.showInAppMessages(activity, params) { result: InAppMessageResult ->
                     val responseCode = result.responseCode
-                    if (connection.isSuccess(responseCode)) {
+                    if (isSuccess(responseCode)) {
                         it.resume(result)
                     } else {
                         it.resumeWithException(

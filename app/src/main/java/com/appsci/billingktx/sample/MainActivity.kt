@@ -20,8 +20,11 @@ import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingFlowParams
 import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.QueryProductDetailsParams
+import com.appsci.billingktx.client.connection.BillingConnection
 import com.appsci.billingktx.client.connection.BillingConnectionImpl
+import com.appsci.billingktx.client.repository.BillingRepository
 import com.appsci.billingktx.client.repository.BillingRepositoryImpl
+import com.appsci.billingktx.client.ui.BillingFlowLauncher
 import com.appsci.billingktx.client.ui.BillingFlowLauncherImpl
 import com.appsci.billingktx.connection.BillingKtxFactory
 import com.appsci.billingktx.lifecycle.keepConnection
@@ -31,22 +34,23 @@ import timber.log.Timber
 
 class MainActivity : ComponentActivity() {
 
-    private lateinit var connection: BillingConnectionImpl
-    private lateinit var repository: BillingRepositoryImpl
-    private lateinit var flowLauncher: BillingFlowLauncherImpl
+    private lateinit var connection: BillingConnection
+    private lateinit var repository: BillingRepository
+    private lateinit var flowLauncher: BillingFlowLauncher
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
-        connection = BillingConnectionImpl(
+        val connectionImpl = BillingConnectionImpl(
             billingFactory = BillingKtxFactory(
                 context = this,
                 enableOneTimeProducts = true,
             )
         )
-        repository = BillingRepositoryImpl(connection)
-        flowLauncher = BillingFlowLauncherImpl(connection)
+        connection = connectionImpl
+        repository = BillingRepositoryImpl(connectionImpl)
+        flowLauncher = BillingFlowLauncherImpl(connectionImpl)
         connection.keepConnection(this)
 
         lifecycleScope.launch {

@@ -15,6 +15,7 @@ import com.android.billingclient.api.consumePurchase
 import com.android.billingclient.api.queryProductDetails
 import com.android.billingclient.api.queryPurchasesAsync
 import com.appsci.billingktx.client.connection.BillingConnectionImpl
+import com.appsci.billingktx.client.connection.isSuccess
 import com.appsci.billingktx.exception.BillingException
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
@@ -27,7 +28,7 @@ class BillingRepositoryImpl(
     override suspend fun isFeatureSupported(@FeatureType feature: String): Boolean {
         return connection.withConnectedClient {
             val result = it.isFeatureSupported(feature)
-            result.responseCode == BillingClient.BillingResponseCode.OK
+            isSuccess(result.responseCode)
         }
     }
 
@@ -40,7 +41,7 @@ class BillingRepositoryImpl(
             val billingResult = purchasesResult.billingResult
             val purchasesList = purchasesResult.purchasesList
 
-            if (connection.isSuccess(billingResult.responseCode)) {
+            if (isSuccess(billingResult.responseCode)) {
                 purchasesList
             } else {
                 throw BillingException.fromResult(billingResult)
@@ -54,7 +55,7 @@ class BillingRepositoryImpl(
             val billingResult = detailsResult.billingResult
             val productDetails = detailsResult.productDetailsList
             val responseCode = billingResult.responseCode
-            if (connection.isSuccess(responseCode)) {
+            if (isSuccess(responseCode)) {
                 productDetails.orEmpty()
             } else {
                 throw BillingException.fromResult(billingResult)
@@ -69,7 +70,7 @@ class BillingRepositoryImpl(
                 .build()
             suspendCancellableCoroutine {
                 client.getBillingConfigAsync(params) { billingResult, config ->
-                    if (connection.isSuccess(billingResult.responseCode) && config != null) {
+                    if (isSuccess(billingResult.responseCode) && config != null) {
                         it.resume(config)
                     } else {
                         it.resumeWithException(BillingException.fromResult(billingResult))
@@ -84,7 +85,7 @@ class BillingRepositoryImpl(
             val consumePurchase = client.consumePurchase(params)
             val billingResult = consumePurchase.billingResult
             val responseCode = billingResult.responseCode
-            if (connection.isSuccess(responseCode)) {
+            if (isSuccess(responseCode)) {
                 Unit
             } else {
                 throw BillingException.fromResult(billingResult)
@@ -96,7 +97,7 @@ class BillingRepositoryImpl(
         return connection.withConnectedClient { client ->
             val billingResult = client.acknowledgePurchase(params)
             val responseCode = billingResult.responseCode
-            if (connection.isSuccess(responseCode)) {
+            if (isSuccess(responseCode)) {
                 Unit
             } else {
                 throw BillingException.fromResult(billingResult)

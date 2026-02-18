@@ -49,7 +49,7 @@ afterEvaluate {
                 from(components["release"])
                 groupId = "com.github.AppSci"
                 artifactId = "billing-ktx"
-                version = "1.1.0-RC1"
+                version = "1.1.0-RC2"
             }
         }
 

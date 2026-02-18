@@ -20,13 +20,7 @@ import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingFlowParams
 import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.QueryProductDetailsParams
-import com.appsci.billingktx.client.connection.BillingConnection
-import com.appsci.billingktx.client.connection.BillingConnectionImpl
-import com.appsci.billingktx.client.repository.BillingRepository
-import com.appsci.billingktx.client.repository.BillingRepositoryImpl
-import com.appsci.billingktx.client.ui.BillingFlowLauncher
-import com.appsci.billingktx.client.ui.BillingFlowLauncherImpl
-import com.appsci.billingktx.connection.BillingKtxFactory
+import com.appsci.billingktx.client.BillingKtx
 import com.appsci.billingktx.lifecycle.keepConnection
 import com.appsci.billingktx.sample.theme.BillingKtxTheme
 import kotlinx.coroutines.launch
@@ -34,28 +28,21 @@ import timber.log.Timber
 
 class MainActivity : ComponentActivity() {
 
-    private lateinit var connection: BillingConnection
-    private lateinit var repository: BillingRepository
-    private lateinit var flowLauncher: BillingFlowLauncher
+    private lateinit var billingKtx: BillingKtx
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
-        val connectionImpl = BillingConnectionImpl(
-            billingFactory = BillingKtxFactory(
-                context = this,
-                enableOneTimeProducts = true,
-            )
+        billingKtx = BillingKtx(
+            context = this,
+            enableOneTimeProducts = true,
         )
-        connection = connectionImpl
-        repository = BillingRepositoryImpl(connectionImpl)
-        flowLauncher = BillingFlowLauncherImpl(connectionImpl)
-        connection.keepConnection(this)
+        billingKtx.keepConnection(this)
 
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                connection.observeUpdates()
+                billingKtx.observeUpdates()
                     .collect {
                         Timber.d("observeUpdates $it")
                     }
@@ -66,7 +53,7 @@ class MainActivity : ComponentActivity() {
             lifecycleScope.launch {
                 val products: Result<List<Purchase>> =
                     runCatching {
-                        repository.getPurchases(BillingClient.ProductType.SUBS)
+                        billingKtx.getPurchases(BillingClient.ProductType.SUBS)
                     }.onSuccess {
                         Timber.d("getPurchases $it")
                     }.onFailure {
@@ -74,7 +61,7 @@ class MainActivity : ComponentActivity() {
                     }
                 val subs: Result<List<Purchase>> =
                     runCatching {
-                        repository.getPurchases(BillingClient.ProductType.INAPP)
+                        billingKtx.getPurchases(BillingClient.ProductType.INAPP)
                     }.onSuccess {
                         Timber.d("getPurchases $it")
                     }.onFailure {
@@ -93,7 +80,7 @@ class MainActivity : ComponentActivity() {
                         .build()
                 )
                 val productDetailsList = runCatching {
-                    repository.getProductDetails(
+                    billingKtx.getProductDetails(
                         QueryProductDetailsParams.newBuilder()
                             .setProductList(
                                 productList,
@@ -117,7 +104,7 @@ class MainActivity : ComponentActivity() {
                             )
                         )
                         .build()
-                    flowLauncher.launchFlow(
+                    billingKtx.launchFlow(
                         activity = this@MainActivity,
                         params = flowParams,
                     )
@@ -127,7 +114,6 @@ class MainActivity : ComponentActivity() {
         }
         setContent {
             BillingKtxTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background

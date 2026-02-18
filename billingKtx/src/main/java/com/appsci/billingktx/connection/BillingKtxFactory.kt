@@ -22,7 +22,7 @@ import kotlinx.coroutines.flow.retryWhen
 import kotlinx.coroutines.flow.shareIn
 import timber.log.Timber
 
-class BillingKtxFactory(
+internal class BillingKtxFactory(
     private val context: Context,
     private val transform: (Flow<BillingClient>) -> Flow<BillingClient> = DefaultTransform(
         sharingScope = CoroutineScope(SupervisorJob()),
@@ -93,7 +93,7 @@ class BillingKtxFactory(
     }
 }
 
-class DefaultTransform<T>(
+internal class DefaultTransform<T>(
     private val sharingScope: CoroutineScope,
     private val timeOut: Long = 3_000,
 ) : (Flow<T>) -> Flow<T> {

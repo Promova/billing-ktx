@@ -78,7 +78,7 @@ dependencies {
     implementation(libs.android.material)
     implementation(libs.android.lifecycle)
 
-    implementation(libs.google.billing)
+    api(libs.google.billing)
 
     implementation(libs.utils.timber)
 }

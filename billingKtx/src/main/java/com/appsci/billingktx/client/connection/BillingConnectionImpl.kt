@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-class BillingConnectionImpl(
+internal class BillingConnectionImpl(
     billingFactory: BillingKtxFactory,
     scope: CoroutineScope = CoroutineScope(SupervisorJob()),
 ) : BillingConnection {

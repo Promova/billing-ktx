@@ -21,18 +21,18 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
-class BillingRepositoryImpl(
+internal class BillingApi(
     private val connection: BillingConnectionImpl,
-) : BillingRepository {
+) {
 
-    override suspend fun isFeatureSupported(@FeatureType feature: String): Boolean {
+    suspend fun isFeatureSupported(@FeatureType feature: String): Boolean {
         return connection.withConnectedClient {
             val result = it.isFeatureSupported(feature)
             isSuccess(result.responseCode)
         }
     }
 
-    override suspend fun getPurchases(@BillingClient.ProductType productType: String): List<Purchase> {
+    suspend fun getPurchases(@BillingClient.ProductType productType: String): List<Purchase> {
         return connection.withConnectedClient {
             val params = QueryPurchasesParams.newBuilder()
                 .setProductType(productType)
@@ -49,7 +49,7 @@ class BillingRepositoryImpl(
         }
     }
 
-    override suspend fun getProductDetails(params: QueryProductDetailsParams): List<ProductDetails> {
+    suspend fun getProductDetails(params: QueryProductDetailsParams): List<ProductDetails> {
         return connection.withConnectedClient { client ->
             val detailsResult = client.queryProductDetails(params)
             val billingResult = detailsResult.billingResult
@@ -63,7 +63,7 @@ class BillingRepositoryImpl(
         }
     }
 
-    override suspend fun getBillingConfig(): BillingConfig {
+    suspend fun getBillingConfig(): BillingConfig {
         return connection.withConnectedClient { client ->
             val params = GetBillingConfigParams
                 .newBuilder()
@@ -80,7 +80,7 @@ class BillingRepositoryImpl(
         }
     }
 
-    override suspend fun consumeProduct(params: ConsumeParams) {
+    suspend fun consumeProduct(params: ConsumeParams) {
         return connection.withConnectedClient { client ->
             val consumePurchase = client.consumePurchase(params)
             val billingResult = consumePurchase.billingResult
@@ -93,7 +93,7 @@ class BillingRepositoryImpl(
         }
     }
 
-    override suspend fun acknowledge(params: AcknowledgePurchaseParams) {
+    suspend fun acknowledge(params: AcknowledgePurchaseParams) {
         return connection.withConnectedClient { client ->
             val billingResult = client.acknowledgePurchase(params)
             val responseCode = billingResult.responseCode

@@ -4,7 +4,7 @@ import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingResult
 
 sealed class BillingException(
-    responseCode: Int,
+    val responseCode: Int,
     debugMessage: String? = null,
 ) : Exception("Billing error, code $responseCode\n$debugMessage") {
 
